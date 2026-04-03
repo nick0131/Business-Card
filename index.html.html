@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>한승진 · Solventics AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #06264a;
+    --navy-mid: #0a3d6b;
+    --blue: #1a73c4;
+    --teal: #2dc89a;
+    --teal-light: #a0ead6;
+    --off-white: #f4f1eb;
+    --cream: #faf8f4;
+    --text: #1a1a1a;
+    --muted: #6b7280;
+    --border: rgba(6,38,74,0.12);
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--cream);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  /* Background pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(26,115,196,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(45,200,154,0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Lang toggle */
+  .lang-toggle {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 3px;
+    box-shadow: 0 2px 8px rgba(6,38,74,0.06);
+  }
+  .lang-btn {
+    padding: 6px 20px;
+    border-radius: 100px;
+    border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.01em;
+  }
+  .lang-btn.active {
+    background: var(--navy);
+    color: white;
+  }
+
+  /* Card */
+  .card {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 420px;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow:
+      0 4px 6px rgba(6,38,74,0.04),
+      0 16px 48px rgba(6,38,74,0.10),
+      0 0 0 1px rgba(6,38,74,0.06);
+    animation: cardIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Header */
+  .card-header {
+    background: var(--navy);
+    padding: 2.25rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(45,200,154,0.08);
+  }
+  .card-header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(26,115,196,0.10);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  .logo-mark {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    position: relative;
+    z-index: 2;
+  }
+  .logo-letters {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+  }
+  .logo-s {
+    font-family: 'DM Serif Display', serif;
+    font-size: 44px;
+    line-height: 1;
+    background: linear-gradient(135deg, #2dc89a, #1a73c4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .logo-a {
+    font-family: 'DM Serif Display', serif;
+    font-size: 34px;
+    line-height: 1;
+    color: rgba(255,255,255,0.75);
+  }
+  .logo-domain {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+  }
+
+  .name-block {
+    position: relative;
+    z-index: 2;
+  }
+  .name-primary {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: white;
+    letter-spacing: 0.12em;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .name-secondary {
+    font-family: 'DM Serif Display', serif;
+    font-size: 15px;
+    font-style: italic;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.02em;
+    margin-bottom: 14px;
+  }
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    padding: 4px 12px;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.75);
+    background: rgba(255,255,255,0.06);
+  }
+
+  /* Accent line */
+  .accent-line {
+    height: 3px;
+    background: linear-gradient(90deg, var(--blue) 0%, var(--teal) 100%);
+  }
+
+  /* Body */
+  .card-body {
+    padding: 1.75rem 2rem;
+  }
+
+  .company {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--blue);
+    letter-spacing: 0.04em;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .info-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #eaf5fb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .info-icon-wrap svg {
+    width: 15px;
+    height: 15px;
+    stroke: var(--blue);
+    stroke-width: 1.8;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .info-text {}
+  .info-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .info-value {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.45;
+  }
+  .info-value a {
+    color: var(--blue);
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .info-value a:hover { opacity: 0.7; }
+
+  /* Footer */
+  .card-footer {
+    padding: 1rem 2rem 1.75rem;
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 11px 0;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    text-decoration: none;
+    border: none;
+  }
+  .btn svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+  .btn-outline {
+    background: var(--off-white);
+    color: var(--navy);
+    border: 1px solid var(--border);
+  }
+  .btn-outline:hover { background: #ebe7de; }
+  .btn-primary {
+    background: var(--navy);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--navy-mid); }
+
+  /* Teal dot decoration */
+  .teal-dot {
+    position: absolute;
+    bottom: 18px; right: 18px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--teal);
+    opacity: 0.6;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--navy);
+    color: white;
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 100px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 100;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Watermark */
+  .watermark {
+    position: relative;
+    z-index: 10;
+    margin-top: 1.25rem;
+    font-size: 11px;
+    color: rgba(6,38,74,0.3);
+    letter-spacing: 0.06em;
+  }
+
+  @media (max-width: 480px) {
+    .name-primary { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="lang-toggle">
+  <button class="lang-btn active" onclick="setLang('ko')" id="btn-ko">한국어</button>
+  <button class="lang-btn" onclick="setLang('en')" id="btn-en">English</button>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="header-top">
+      <div class="name-block">
+        <div class="name-primary" id="name">한 승 진</div>
+        <div class="name-secondary" id="name-en">Seung Jin Han</div>
+        <div class="badges">
+          <span class="badge" id="badge1">대표이사</span>
+          <span class="badge" id="badge2">통계학 박사</span>
+        </div>
+      </div>
+      <div class="logo-mark">
+        <div class="logo-letters">
+          <span class="logo-s">S</span><span class="logo-a">A</span>
+        </div>
+        <div class="logo-domain">SOLVENTICSAI.COM</div>
+      </div>
+    </div>
+    <div class="teal-dot"></div>
+  </div>
+
+  <div class="accent-line"></div>
+
+  <div class="card-body">
+    <div class="company" id="company">주식회사 솔벤틱스에이아이</div>
+
+    <div class="info-list">
+      <div class="info-row">
+        <div class="info-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+        </div>
+        <div class="info-text">
+          <div class="info-label">Mobile</div>
+          <div class="info-value"><a href="tel:01033561026" id="phone-link" id="phone-display">010-3356-1026</a></div>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="info-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div class="info-text">
+          <div class="info-label">E-mail</div>
+          <div class="info-value"><a href="mailto:contact@solventicsai.com">contact@solventicsai.com</a></div>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="info-icon-wrap">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        </div>
+        <div class="info-text">
+          <div class="info-label">Website</div>
+          <div class="info-value"><a href="https://solventicsai.com" target="_blank">solventicsai.com</a></div>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="info-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div class="info-text">
+          <div class="info-label" id="addr-label">주소</div>
+          <div class="info-value" id="addr">06025 서울시 강남구 논현로 152길 15, 311호</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <button class="btn btn-outline" onclick="saveVcf()" id="btn-save">
+      <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      연락처 저장
+    </button>
+    <a class="btn btn-primary" href="mailto:contact@solventicsai.com" id="btn-email">
+      <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      이메일 보내기
+    </a>
+  </div>
+</div>
+
+<div class="watermark">Solventics AI · Digital Card</div>
+<div class="toast" id="toast">연락처가 저장되었어요!</div>
+
+<script>
+var lang = 'ko';
+var strings = {
+  ko: {
+    name: '한 승 진',
+    nameEn: 'Seung Jin Han',
+    badge1: '대표이사',
+    badge2: '통계학 박사',
+    company: '주식회사 솔벤틱스에이아이',
+    phoneDisplay: '010-3356-1026',
+    phoneHref: 'tel:01033561026',
+    addrLabel: '주소',
+    addr: '06025 서울시 강남구 논현로 152길 15, 311호',
+    save: '연락처 저장',
+    email: '이메일 보내기',
+    toast: '연락처(.vcf)가 다운로드되었어요!'
+  },
+  en: {
+    name: 'Seung Jin Han',
+    nameEn: 'Founder & CEO · Ph.D. in Statistics',
+    badge1: 'Founder & CEO',
+    badge2: 'Ph.D. Statistics',
+    company: 'Solventics AI Inc.',
+    phoneDisplay: '+(82) 10-3356-1026',
+    phoneHref: 'tel:+821033561026',
+    addrLabel: 'Address',
+    addr: 'Suite 311, 15 Nonhyun-ro 152-gil, Gangnam-gu, Seoul 06025, Republic of Korea',
+    save: 'Save Contact',
+    email: 'Send Email',
+    toast: 'Contact (.vcf) downloaded!'
+  }
+};
+
+function setLang(l) {
+  lang = l;
+  var s = strings[l];
+  document.getElementById('name').textContent = s.name;
+  document.getElementById('name-en').textContent = s.nameEn;
+  document.getElementById('badge1').textContent = s.badge1;
+  document.getElementById('badge2').textContent = s.badge2;
+  document.getElementById('company').textContent = s.company;
+  var phoneEl = document.getElementById('phone-link');
+  phoneEl.textContent = s.phoneDisplay;
+  phoneEl.href = s.phoneHref;
+  document.getElementById('addr-label').textContent = s.addrLabel;
+  document.getElementById('addr').textContent = s.addr;
+
+  var btnSave = document.getElementById('btn-save');
+  btnSave.childNodes[btnSave.childNodes.length - 1].textContent = ' ' + s.save;
+  var btnEmail = document.getElementById('btn-email');
+  btnEmail.childNodes[btnEmail.childNodes.length - 1].textContent = ' ' + s.email;
+
+  document.getElementById('btn-ko').className = 'lang-btn' + (l === 'ko' ? ' active' : '');
+  document.getElementById('btn-en').className = 'lang-btn' + (l === 'en' ? ' active' : '');
+}
+
+function saveVcf() {
+  var vcf = [
+    'BEGIN:VCARD',
+    'VERSION:3.0',
+    'FN:Seung Jin Han',
+    'N:Han;SeungJin;;;',
+    'ORG:Solventics AI Inc.',
+    'TITLE:Founder & CEO',
+    'TEL;TYPE=CELL:+82-10-3356-1026',
+    'EMAIL:contact@solventicsai.com',
+    'URL:https://solventicsai.com',
+    'ADR;TYPE=WORK:;;15 Nonhyun-ro 152-gil Suite 311;Seoul;;06025;Republic of Korea',
+    'END:VCARD'
+  ].join('\r\n');
+
+  var blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'SeungJin_Han_SolventicAI.vcf';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  var toast = document.getElementById('toast');
+  toast.textContent = strings[lang].toast;
+  toast.classList.add('show');
+  setTimeout(function() { toast.classList.remove('show'); }, 2800);
+}
+</script>
+</body>
+</html>
